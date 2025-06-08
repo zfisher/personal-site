@@ -50,6 +50,8 @@
 
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <script>
+    let pendingTurnstile = false;   <!---- NEW LINE (1) -->
+
     document.getElementById('contact').addEventListener('submit', function (e) {
       const name    = this.name.value.trim();
       const email   = this.email.value.trim();
@@ -62,11 +64,18 @@
       }
       if (!this['cf-turnstile-response']?.value) {
         e.preventDefault();
+        pendingTurnstile = true;
         turnstile.execute();
+        return;
       }
     });
 
-    function onCaptcha() { document.getElementById('contact').submit(); }
+    function onCaptcha() {
+      if (pendingTurnstile) {
+        pendingTurnstile = false;
+        document.getElementById('contact').submit();
+      }
+    }
   </script>
 </body>
 </html>
