@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Write to Zach</title>
+
+  <link href="https://fonts.bunny.net/css?family=Montserrat:200%7CRaleway&display=swap" rel="stylesheet">
+  <link href="/styles/zach.css" rel="stylesheet">
+
+  <style>
+    form      { max-width: 700px; margin: 0 auto; }
+    input,textarea { width: 98%; font: 13pt/1.4 Montserrat, sans-serif; padding: 6px;
+                     border: 1px solid #e0e0e0; border-radius: 5px; }
+    input     { width: 47%; }  /* name / email side-by-side on desktop */
+    textarea  { height: 160px; resize: vertical; }
+    button    { margin: 1.2em auto 0; display: block; padding: 6px 16px;
+                border: 1px solid #e0e0e0; background:#fff; font-size: 14pt; }
+    @media (prefers-color-scheme:dark) {
+       input,textarea { background:#222; color:#fff; border-color:#3a3a3a; }
+       button         { background:#222; color:#ddd; border-color:#3a3a3a; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="content">
+    <h1>Write to Zach</h1>
+
+    <form id="contact" action="https://contact.zachfisher.com/submit" method="POST" novalidate>
+      <p><input name="name"  placeholder="Your name"           required>
+         <input name="email" type="email" placeholder="Your email address" required style="float:right"></p>
+
+      <p><textarea name="message" placeholder="Message" required></textarea></p>
+
+      <!-- Honeypot for noscript / dev bypass -->
+      <noscript><input type="text" name="phone"
+                       placeholder="What is my last name, removing the vowels?"
+                       autocomplete="off"></noscript>
+
+      <div class="cf-turnstile"
+           data-sitekey="0x4AAAAAABgcSnswh-1MbkB0"
+           data-callback="onCaptcha"
+           data-size="invisible">
+      </div>
+
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <script>
+    document.getElementById('contact').addEventListener('submit', function (e) {
+      const name    = this.name.value.trim();
+      const email   = this.email.value.trim();
+      const message = this.message.value.trim();
+      if (!name || !email || !message ||
+          !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        alert('Please fill in all fields with a valid email.');
+        e.preventDefault();
+        return;
+      }
+      if (!this['cf-turnstile-response']?.value) {
+        e.preventDefault();
+        turnstile.execute();
+      }
+    });
+
+    function onCaptcha() { document.getElementById('contact').submit(); }
+  </script>
+</body>
+</html>
