@@ -9,16 +9,55 @@
   <link href="/styles/zach.css" rel="stylesheet">
 
   <style>
-    form      { max-width: 700px; margin: 0 auto; }
-    input,textarea { width: 98%; font: 13pt/1.4 Montserrat, sans-serif; padding: 6px;
-                     border: 1px solid #e0e0e0; border-radius: 5px; }
-    input     { width: 47%; }  /* name / email side-by-side on desktop */
-    textarea  { height: 160px; resize: vertical; }
-    button    { margin: 1.2em auto 0; display: block; padding: 6px 16px;
-                border: 1px solid #e0e0e0; background:#fff; font-size: 14pt; }
+    form {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    input, textarea {
+      width: 98%;
+      font: 13pt/1.4 Montserrat, sans-serif;
+      padding: 6px;
+      border: 1px solid #e0e0e0;
+      border-radius: 5px;
+    }
+    input {
+      width: 47%;
+    }
+    textarea {
+      height: 160px;
+      resize: vertical;
+    }
+    button {
+      margin: 1.2em auto 0;
+      display: block;
+      padding: 6px 16px;
+      border: 1px solid #e0e0e0;
+      background:#fff;
+      font-size: 14pt;
+    }
     @media (prefers-color-scheme:dark) {
-       input,textarea { background:#222; color:#fff; border-color:#3a3a3a; }
-       button         { background:#222; color:#ddd; border-color:#3a3a3a; }
+      input, textarea {
+        background:#222;
+        color:#fff;
+        border-color:#3a3a3a;
+      }
+      button {
+        background:#222;
+        color:#ddd;
+        border-color:#3a3a3a;
+      }
+    }
+    @media all and (max-width: 700px) {
+      input {
+        width: 42%;
+      }
+      textarea {
+        width: 96%;
+      }
+      p {
+        padding-left: 3%;
+        padding-right: 3%;
+      }
     }
   </style>
 </head>
@@ -29,7 +68,7 @@
 
     <form id="contact" action="https://contact.zachfisher.com/submit" method="POST" novalidate>
       <p><input name="name"  placeholder="Your name"           required>
-         <input name="email" type="email" placeholder="Your email address" required style="float:right"></p>
+         <input name="email" type="email" placeholder="Your email" required style="float:right"></p>
 
       <p><textarea name="message" placeholder="Message" required></textarea></p>
 
@@ -37,6 +76,7 @@
       <div class="cf-turnstile"
            data-sitekey="0x4AAAAAABgcSnswh-1MbkB0"
            data-callback="onCaptcha"
+           data-appearance="interaction-only"
            data-size="normal">
       </div>
 
