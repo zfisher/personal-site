@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flag Trainer</title>
+    
+    <!-- Tailwind CSS (Styling) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM (Core Library) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel (To allow JSX/React code in the browser) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Tailwind Config for Custom Colors/Fonts -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        /* Hide scrollbar for clean UI in dropdowns */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- ICONS (Inlined for single-file portability) ---
+        const IconTrophy = ({size=24, className=""}) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+        );
+        const IconCheck = ({size=24, className="", strokeWidth=2}) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"/></svg>
+        );
+        const IconX = ({size=24, className="", strokeWidth=2}) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 6 6 18"/><path d="m6 6 18 12"/></svg>
+        );
+        const IconLock = ({size=24, className=""}) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        );
+        const IconSearch = ({size=24, className=""}) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        );
+        const IconArrowRight = ({size=24, className=""}) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        );
+        const IconChevronRight = ({size=24, className=""}) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m9 18 6-6-6-6"/></svg>
+        );
+        const IconSettings = ({size=24, className=""}) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.39a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        );
+        const IconRotateCcw = ({size=24, className=""}) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        );
+
+        // --- DATASET: 190+ Countries ---
+        const COUNTRY_DATA = [
+            // TIER 1
+            { code: 'us', name: 'United States', tier: 1, aliases: ['usa', 'america'] },
+            { code: 'gb', name: 'United Kingdom', tier: 1, aliases: ['uk', 'britain', 'great britain', 'england'] },
+            { code: 'ca', name: 'Canada', tier: 1 },
+            { code: 'jp', name: 'Japan', tier: 1 },
+            { code: 'fr', name: 'France', tier: 1 },
+            { code: 'de', name: 'Germany', tier: 1 },
+            { code: 'it', name: 'Italy', tier: 1 },
+            { code: 'br', name: 'Brazil', tier: 1 },
+            { code: 'cn', name: 'China', tier: 1 },
+            { code: 'au', name: 'Australia', tier: 1 },
+            { code: 'kr', name: 'South Korea', tier: 1, aliases: ['korea'] },
+            { code: 'ch', name: 'Switzerland', tier: 1 },
+            { code: 'in', name: 'India', tier: 1 },
+            { code: 'il', name: 'Israel', tier: 1 },
+            { code: 'za', name: 'South Africa', tier: 1 },
+            { code: 'ru', name: 'Russia', tier: 1 },
+            { code: 'mx', name: 'Mexico', tier: 1 },
+            { code: 'es', name: 'Spain', tier: 1 },
+
+            // TIER 2
+            { code: 'se', name: 'Sweden', tier: 2 },
+            { code: 'no', name: 'Norway', tier: 2 },
+            { code: 'fi', name: 'Finland', tier: 2 },
+            { code: 'dk', name: 'Denmark', tier: 2 },
+            { code: 'gr', name: 'Greece', tier: 2 },
+            { code: 'tr', name: 'Turkey', tier: 2 },
+            { code: 'ar', name: 'Argentina', tier: 2 },
+            { code: 'pt', name: 'Portugal', tier: 2 },
+            { code: 'nl', name: 'Netherlands', tier: 2, aliases: ['holland'] },
+            { code: 'be', name: 'Belgium', tier: 2 },
+            { code: 'ua', name: 'Ukraine', tier: 2 },
+            { code: 'ie', name: 'Ireland', tier: 2 },
+            { code: 'sa', name: 'Saudi Arabia', tier: 2 },
+            { code: 'vn', name: 'Vietnam', tier: 2 },
+            { code: 'th', name: 'Thailand', tier: 2 },
+            { code: 'nz', name: 'New Zealand', tier: 2 },
+            { code: 'jm', name: 'Jamaica', tier: 2 },
+            { code: 'cu', name: 'Cuba', tier: 2 },
+            { code: 'eg', name: 'Egypt', tier: 2 },
+            { code: 'sg', name: 'Singapore', tier: 2 },
+            { code: 'ph', name: 'Philippines', tier: 2 },
+            { code: 'my', name: 'Malaysia', tier: 2 },
+            { code: 'pk', name: 'Pakistan', tier: 2 },
+            { code: 'cl', name: 'Chile', tier: 2 },
+            { code: 'co', name: 'Colombia', tier: 2 },
+            { code: 'pl', name: 'Poland', tier: 2 },
+            { code: 'at', name: 'Austria', tier: 2 },
+            { code: 'hr', name: 'Croatia', tier: 2 },
+            { code: 'cz', name: 'Czech Republic', tier: 2, aliases: ['czechia'] },
+            { code: 'ng', name: 'Nigeria', tier: 2 },
+            { code: 'ke', name: 'Kenya', tier: 2 },
+            { code: 'ma', name: 'Morocco', tier: 2 },
+            { code: 'ir', name: 'Iran', tier: 2 },
+            { code: 'iq', name: 'Iraq', tier: 2 },
+            { code: 'pe', name: 'Peru', tier: 2 },
+            { code: 've', name: 'Venezuela', tier: 2 },
+
+            // TIER 3
+            { code: 'id', name: 'Indonesia', tier: 3 }, 
+            { code: 'mc', name: 'Monaco', tier: 3 },
+            { code: 'ro', name: 'Romania', tier: 3 }, 
+            { code: 'td', name: 'Chad', tier: 3 },
+            { code: 'ml', name: 'Mali', tier: 3 },
+            { code: 'gn', name: 'Guinea', tier: 3 },
+            { code: 'ci', name: 'Ivory Coast', tier: 3, aliases: ["cote d'ivoire"] },
+            { code: 'hu', name: 'Hungary', tier: 3 },
+            { code: 'bg', name: 'Bulgaria', tier: 3 },
+            { code: 'sy', name: 'Syria', tier: 3 },
+            { code: 'ye', name: 'Yemen', tier: 3 },
+            { code: 'ec', name: 'Ecuador', tier: 3 },
+            { code: 'bo', name: 'Bolivia', tier: 3 },
+            { code: 'py', name: 'Paraguay', tier: 3 },
+            { code: 'uy', name: 'Uruguay', tier: 3 },
+            { code: 'bd', name: 'Bangladesh', tier: 3 },
+            { code: 'np', name: 'Nepal', tier: 3 },
+            { code: 'lk', name: 'Sri Lanka', tier: 3 },
+            { code: 'kh', name: 'Cambodia', tier: 3 },
+            { code: 'la', name: 'Laos', tier: 3 },
+            { code: 'mm', name: 'Myanmar', tier: 3, aliases: ['burma'] },
+            { code: 'mn', name: 'Mongolia', tier: 3 },
+            { code: 'kz', name: 'Kazakhstan', tier: 3 },
+            { code: 'lb', name: 'Lebanon', tier: 3 },
+            { code: 'jo', name: 'Jordan', tier: 3 },
+            { code: 'kw', name: 'Kuwait', tier: 3 },
+            { code: 'ae', name: 'United Arab Emirates', tier: 3, aliases: ['uae'] },
+            { code: 'qa', name: 'Qatar', tier: 3 },
+            { code: 'bh', name: 'Bahrain', tier: 3 },
+            { code: 'om', name: 'Oman', tier: 3 },
+            { code: 'tn', name: 'Tunisia', tier: 3 },
+            { code: 'dz', name: 'Algeria', tier: 3 },
+            { code: 'ly', name: 'Libya', tier: 3 },
+            { code: 'sd', name: 'Sudan', tier: 3 },
+            { code: 'et', name: 'Ethiopia', tier: 3 },
+            { code: 'gh', name: 'Ghana', tier: 3 },
+            { code: 'sn', name: 'Senegal', tier: 3 },
+            { code: 'cm', name: 'Cameroon', tier: 3 },
+            { code: 'ao', name: 'Angola', tier: 3 },
+            { code: 'mz', name: 'Mozambique', tier: 3 },
+            { code: 'zw', name: 'Zimbabwe', tier: 3 },
+            { code: 'rs', name: 'Serbia', tier: 3 },
+            { code: 'sk', name: 'Slovakia', tier: 3 },
+            { code: 'si', name: 'Slovenia', tier: 3 },
+            { code: 'ee', name: 'Estonia', tier: 3 },
+            { code: 'lv', name: 'Latvia', tier: 3 },
+            { code: 'lt', name: 'Lithuania', tier: 3 },
+            { code: 'by', name: 'Belarus', tier: 3 },
+            { code: 'ge', name: 'Georgia', tier: 3 },
+            { code: 'am', name: 'Armenia', tier: 3 },
+            { code: 'az', name: 'Azerbaijan', tier: 3 },
+            { code: 'pa', name: 'Panama', tier: 3 },
+            { code: 'cr', name: 'Costa Rica', tier: 3 },
+            { code: 'do', name: 'Dominican Republic', tier: 3 },
+            { code: 'gt', name: 'Guatemala', tier: 3 },
+            { code: 'hn', name: 'Honduras', tier: 3 },
+            { code: 'sv', name: 'El Salvador', tier: 3 },
+            { code: 'ni', name: 'Nicaragua', tier: 3 },
+            { code: 'tw', name: 'Taiwan', tier: 3 },
+            { code: 'kp', name: 'North Korea', tier: 3 },
+            { code: 'is', name: 'Iceland', tier: 3 },
+
+            // TIER 4
+            { code: 'uz', name: 'Uzbekistan', tier: 4 },
+            { code: 'tm', name: 'Turkmenistan', tier: 4 },
+            { code: 'kg', name: 'Kyrgyzstan', tier: 4 },
+            { code: 'tj', name: 'Tajikistan', tier: 4 },
+            { code: 'af', name: 'Afghanistan', tier: 4 },
+            { code: 'bt', name: 'Bhutan', tier: 4 },
+            { code: 'mv', name: 'Maldives', tier: 4 },
+            { code: 'bn', name: 'Brunei', tier: 4 },
+            { code: 'tl', name: 'Timor-Leste', tier: 4, aliases: ['east timor'] },
+            { code: 'ps', name: 'Palestine', tier: 4 },
+            { code: 'cy', name: 'Cyprus', tier: 4 },
+            { code: 'mt', name: 'Malta', tier: 4 },
+            { code: 'al', name: 'Albania', tier: 4 },
+            { code: 'mk', name: 'North Macedonia', tier: 4 },
+            { code: 'me', name: 'Montenegro', tier: 4 },
+            { code: 'ba', name: 'Bosnia and Herzegovina', tier: 4, aliases: ['bosnia'] },
+            { code: 'xk', name: 'Kosovo', tier: 4 },
+            { code: 'md', name: 'Moldova', tier: 4 },
+            { code: 'ad', name: 'Andorra', tier: 4 },
+            { code: 'li', name: 'Liechtenstein', tier: 4 },
+            { code: 'sm', name: 'San Marino', tier: 4 },
+            { code: 'va', name: 'Vatican City', tier: 4 },
+            { code: 'cv', name: 'Cape Verde', tier: 4, aliases: ['cabo verde'] },
+            { code: 'gw', name: 'Guinea-Bissau', tier: 4 },
+            { code: 'sl', name: 'Sierra Leone', tier: 4 },
+            { code: 'lr', name: 'Liberia', tier: 4 },
+            { code: 'bf', name: 'Burkina Faso', tier: 4 },
+            { code: 'tg', name: 'Togo', tier: 4 },
+            { code: 'bj', name: 'Benin', tier: 4 },
+            { code: 'ne', name: 'Niger', tier: 4 },
+            { code: 'cf', name: 'Central African Republic', tier: 4, aliases: ['car'] },
+            { code: 'gq', name: 'Equatorial Guinea', tier: 4 },
+            { code: 'ga', name: 'Gabon', tier: 4 },
+            { code: 'cg', name: 'Republic of the Congo', tier: 4, aliases: ['congo'] },
+            { code: 'cd', name: 'DR Congo', tier: 4, aliases: ['drc', 'democratic republic of the congo'] },
+            { code: 'ug', name: 'Uganda', tier: 4 },
+            { code: 'rw', name: 'Rwanda', tier: 4 },
+            { code: 'bi', name: 'Burundi', tier: 4 },
+            { code: 'tz', name: 'Tanzania', tier: 4 },
+            { code: 'so', name: 'Somalia', tier: 4 },
+            { code: 'dj', name: 'Djibouti', tier: 4 },
+            { code: 'er', name: 'Eritrea', tier: 4 },
+            { code: 'ss', name: 'South Sudan', tier: 4 },
+            { code: 'zm', name: 'Zambia', tier: 4 },
+            { code: 'mw', name: 'Malawi', tier: 4 },
+            { code: 'bw', name: 'Botswana', tier: 4 },
+            { code: 'na', name: 'Namibia', tier: 4 },
+            { code: 'ls', name: 'Lesotho', tier: 4 },
+            { code: 'sz', name: 'Eswatini', tier: 4, aliases: ['swaziland'] },
+            { code: 'mg', name: 'Madagascar', tier: 4 },
+            { code: 'mu', name: 'Mauritius', tier: 4 },
+            { code: 'sc', name: 'Seychelles', tier: 4 },
+            { code: 'km', name: 'Comoros', tier: 4 },
+            { code: 'st', name: 'Sao Tome and Principe', tier: 4 },
+            { code: 'ht', name: 'Haiti', tier: 4 },
+            { code: 'bs', name: 'Bahamas', tier: 4 },
+            { code: 'bz', name: 'Belize', tier: 4 },
+            { code: 'tt', name: 'Trinidad and Tobago', tier: 4 },
+            { code: 'bb', name: 'Barbados', tier: 4 },
+            { code: 'lc', name: 'Saint Lucia', tier: 4 },
+            { code: 'vc', name: 'Saint Vincent and the Grenadines', tier: 4 },
+            { code: 'gd', name: 'Grenada', tier: 4 },
+            { code: 'ag', name: 'Antigua and Barbuda', tier: 4 },
+            { code: 'kn', name: 'Saint Kitts and Nevis', tier: 4 },
+            { code: 'dm', name: 'Dominica', tier: 4 },
+            { code: 'gy', name: 'Guyana', tier: 4 },
+            { code: 'sr', name: 'Suriname', tier: 4 },
+            { code: 'fj', name: 'Fiji', tier: 4 },
+            { code: 'pg', name: 'Papua New Guinea', tier: 4 },
+            { code: 'sb', name: 'Solomon Islands', tier: 4 },
+            { code: 'vu', name: 'Vanuatu', tier: 4 },
+            { code: 'nc', name: 'New Caledonia', tier: 4 },
+            { code: 'fm', name: 'Micronesia', tier: 4 },
+            { code: 'mh', name: 'Marshall Islands', tier: 4 },
+            { code: 'pw', name: 'Palau', tier: 4 },
+            { code: 'nr', name: 'Nauru', tier: 4 },
+            { code: 'ki', name: 'Kiribati', tier: 4 },
+            { code: 'tv', name: 'Tuvalu', tier: 4 },
+            { code: 'to', name: 'Tonga', tier: 4 },
+            { code: 'ws', name: 'Samoa', tier: 4 },
+        ];
+
+        const INITIAL_PROGRESS = {
+            tier: 1,
+            items: {},
+        };
+
+        const BOX_INTERVALS = [0, 30, 120, 300, 600, 3600]; 
+
+        const TIERS = [
+            { id: 1, name: "Beginner", desc: "Global superpowers & famous flags" },
+            { id: 2, name: "Intermediate", desc: "Common nations & distinct patterns" },
+            { id: 3, name: "Hard", desc: "Tricky tricolors & easily confused flags" },
+            { id: 4, name: "Expert", desc: "Obscure nations & tiny islands" }
+        ];
+
+        function FlagTrainer() {
+            const [progress, setProgress] = useState(INITIAL_PROGRESS);
+            const [currentFlag, setCurrentFlag] = useState(null);
+            const [inputValue, setInputValue] = useState('');
+            const [suggestions, setSuggestions] = useState([]);
+            const [feedback, setFeedback] = useState(null);
+            const [showAnswer, setShowAnswer] = useState(false);
+            const [streak, setStreak] = useState(0);
+            const [sessionStats, setSessionStats] = useState({ correct: 0, total: 0 });
+            const [isSetupMode, setIsSetupMode] = useState(true);
+
+            const inputRef = useRef(null);
+
+            // Load Progress
+            useEffect(() => {
+                const saved = localStorage.getItem('flagTrainerProgress');
+                if (saved) {
+                    try {
+                        const parsed = JSON.parse(saved);
+                        if (parsed && parsed.tier) {
+                            setProgress({ ...INITIAL_PROGRESS, ...parsed });
+                            setIsSetupMode(false);
+                        }
+                    } catch (e) {
+                        console.error("Failed to load save", e);
+                    }
+                }
+            }, []);
+
+            // Save Progress
+            useEffect(() => {
+                if (!isSetupMode) {
+                    localStorage.setItem('flagTrainerProgress', JSON.stringify(progress));
+                }
+            }, [progress, isSetupMode]);
+
+            // Load first flag
+            useEffect(() => {
+                if (!isSetupMode && !currentFlag) {
+                    nextFlag();
+                }
+            }, [isSetupMode, progress.tier]);
+
+            const selectTier = (tierId) => {
+                setProgress(prev => ({ ...prev, tier: tierId }));
+                setIsSetupMode(false);
+                setCurrentFlag(null);
+                setStreak(0);
+            };
+
+            const resetProgress = () => {
+                localStorage.removeItem('flagTrainerProgress');
+                setProgress(INITIAL_PROGRESS);
+                setSessionStats({ correct: 0, total: 0 });
+                setStreak(0);
+                setCurrentFlag(null);
+                setIsSetupMode(true);
+            };
+
+            const getNextFlagCandidate = (currentCode = null) => {
+                const now = Date.now();
+                
+                const activeItems = Object.entries(progress.items).filter(([code, data]) => {
+                    const country = COUNTRY_DATA.find(c => c.code === code);
+                    return country && country.tier <= progress.tier && code !== currentCode;
+                });
+
+                // 1. Due Cards
+                const dueItems = activeItems
+                    .filter(([_, data]) => data.nextReview <= now)
+                    .sort((a, b) => a[1].nextReview - b[1].nextReview);
+
+                if (dueItems.length > 0) {
+                    const index = Math.floor(Math.random() * Math.min(dueItems.length, 3));
+                    return COUNTRY_DATA.find(c => c.code === dueItems[index][0]);
+                }
+
+                // 2. New Cards (from current tier)
+                const seenCodes = new Set(Object.keys(progress.items));
+                const newCandidates = COUNTRY_DATA.filter(c => 
+                    c.tier === progress.tier && 
+                    !seenCodes.has(c.code) && 
+                    c.code !== currentCode
+                );
+
+                if (newCandidates.length > 0) {
+                    return newCandidates[Math.floor(Math.random() * newCandidates.length)];
+                }
+
+                // 3. Review Ahead
+                const reviewCandidates = activeItems.map(([code]) => COUNTRY_DATA.find(c => c.code === code));
+                if (reviewCandidates.length > 0) {
+                    return reviewCandidates[Math.floor(Math.random() * reviewCandidates.length)];
+                }
+
+                // Fallback
+                const fallback = COUNTRY_DATA.filter(c => c.tier <= progress.tier);
+                return fallback[Math.floor(Math.random() * fallback.length)];
+            };
+
+            const nextFlag = () => {
+                const next = getNextFlagCandidate(currentFlag?.code);
+                setCurrentFlag(next);
+                setInputValue('');
+                setSuggestions([]);
+                setFeedback(null);
+                setShowAnswer(false);
+                
+                setTimeout(() => {
+                    if(inputRef.current) inputRef.current.focus();
+                }, 50);
+            };
+
+            const handleInput = (e) => {
+                const value = e.target.value;
+                setInputValue(value);
+                setFeedback(null);
+
+                if (value.length > 1) {
+                    const matches = COUNTRY_DATA
+                        .filter(c => {
+                        const matchName = c.name.toLowerCase().includes(value.toLowerCase());
+                        const matchAlias = c.aliases ? c.aliases.some(a => a.includes(value.toLowerCase())) : false;
+                        return matchName || matchAlias;
+                        })
+                        .slice(0, 5);
+                    setSuggestions(matches);
+                } else {
+                    setSuggestions([]);
+                }
+            };
+
+            const selectSuggestion = (name) => {
+                setInputValue(name);
+                setSuggestions([]);
+                submitAnswer(name);
+            };
+
+            const submitAnswer = (answerOverride = null) => {
+                if (showAnswer || feedback) {
+                    nextFlag();
+                    return;
+                }
+
+                const answer = answerOverride || inputValue;
+                if (!answer.trim()) return;
+
+                const isCorrect = 
+                    answer.toLowerCase() === currentFlag.name.toLowerCase() || 
+                    (currentFlag.aliases && currentFlag.aliases.includes(answer.toLowerCase()));
+
+                const now = Date.now();
+                const currentItem = progress.items[currentFlag.code] || { box: 0, nextReview: 0 };
+                let newBox = currentItem.box;
+
+                if (isCorrect) {
+                    setFeedback('correct');
+                    setStreak(s => s + 1);
+                    setSessionStats(s => ({ correct: s.correct + 1, total: s.total + 1 }));
+                    newBox = Math.min(newBox + 1, BOX_INTERVALS.length - 1);
+                } else {
+                    setFeedback('wrong');
+                    setShowAnswer(true);
+                    setStreak(0);
+                    setSessionStats(s => ({ ...s, total: s.total + 1 }));
+                    newBox = 0;
+                }
+
+                const nextReview = now + (BOX_INTERVALS[newBox] * 1000);
+
+                const updatedItems = {
+                    ...progress.items,
+                    [currentFlag.code]: {
+                        box: newBox,
+                        nextReview: nextReview,
+                        lastResult: isCorrect ? 'correct' : 'wrong'
+                    }
+                };
+
+                // Auto Tier Promotion Logic
+                let newTier = progress.tier;
+                const currentTierFlags = COUNTRY_DATA.filter(c => c.tier === progress.tier);
+                if (currentTierFlags.length > 0) {
+                    const masteredCount = currentTierFlags.filter(c => {
+                        const item = updatedItems[c.code];
+                        return item && item.box >= 2;
+                    }).length;
+                    
+                    if ((masteredCount / currentTierFlags.length) >= 0.8) {
+                        if (newTier < 4) newTier++;
+                    }
+                }
+
+                setProgress({
+                    tier: newTier,
+                    items: updatedItems
+                });
+
+                if (isCorrect) {
+                    setTimeout(() => nextFlag(), 800);
+                }
+            };
+
+            const handleKeyDown = (e) => {
+                if (e.key === 'Enter') {
+                    if (feedback === 'correct' || feedback === 'wrong') {
+                        nextFlag();
+                    } else if (suggestions.length > 0) {
+                        selectSuggestion(suggestions[0].name);
+                    } else {
+                        submitAnswer();
+                    }
+                }
+            };
+
+            // Setup Screen Component
+            const SetupScreen = () => (
+                <div className="flex flex-col items-center justify-center min-h-[80vh] w-full max-w-lg mx-auto p-6 animate-[fadeIn_0.5s_ease-out]">
+                    <div className="bg-indigo-100 p-4 rounded-full mb-6 text-indigo-600">
+                        <IconTrophy size={48} />
+                    </div>
+                    <h1 className="text-3xl font-extrabold text-slate-800 mb-2">Welcome to Flag Trainer</h1>
+                    <p className="text-slate-500 text-center mb-8">Select your starting difficulty level. The app will adapt to your skill as you play.</p>
+                    
+                    <div className="w-full space-y-3">
+                        {TIERS.map((tier) => (
+                        <button
+                            key={tier.id}
+                            onClick={() => selectTier(tier.id)}
+                            className="w-full text-left p-4 rounded-2xl border-2 border-slate-200 hover:border-indigo-500 hover:bg-indigo-50 transition-all group relative overflow-hidden bg-white shadow-sm"
+                        >
+                            <div className="flex items-center justify-between relative z-10">
+                                <div>
+                                    <span className="text-indigo-600 font-bold text-xs uppercase tracking-wider mb-1 block">Tier {tier.id}</span>
+                                    <h3 className="font-bold text-slate-800 text-lg">{tier.name}</h3>
+                                    <p className="text-slate-500 text-sm mt-1">{tier.desc}</p>
+                                </div>
+                                <IconChevronRight className="text-slate-300 group-hover:text-indigo-500 transition-colors" />
+                            </div>
+                        </button>
+                        ))}
+                    </div>
+                </div>
+            );
+
+            // Game Screen Component
+            const GameScreen = () => {
+                const getTierProgress = () => {
+                    const currentTierFlags = COUNTRY_DATA.filter(c => c.tier === progress.tier);
+                    const total = currentTierFlags.length;
+                    const known = currentTierFlags.filter(c => {
+                        const item = progress.items[c.code];
+                        return item && item.box > 0;
+                    }).length;
+                    return total === 0 ? 0 : (known / total) * 100;
+                };
+
+                if (!currentFlag) return <div className="flex h-screen items-center justify-center text-slate-500">Loading Next Flag...</div>;
+
+                return (
+                    <React.Fragment>
+                    {/* Top Bar */}
+                    <div className="bg-white border-b border-slate-200 px-4 py-3 shadow-sm flex items-center justify-between sticky top-0 z-20">
+                        <div className="flex items-center gap-3">
+                        <div className="bg-indigo-600 p-1.5 rounded-lg">
+                            <IconTrophy size={16} className="text-white" />
+                        </div>
+                        <div>
+                            <h1 className="font-bold text-slate-800 leading-tight">Flag Trainer</h1>
+                            <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+                                <span className="flex items-center gap-1"><IconLock size={10} /> Tier {progress.tier}</span>
+                                <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+                                <span>Streak: {streak}</span>
+                            </div>
+                        </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-4">
+                            <div className="hidden sm:flex flex-col items-end">
+                                <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider mb-1">Tier Mastery</span>
+                                <div className="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                    <div className="h-full bg-indigo-500 transition-all duration-500" style={{ width: `${getTierProgress()}%` }}></div>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={() => setIsSetupMode(true)}
+                                className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors"
+                                title="Settings"
+                            >
+                                <IconSettings size={20} />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Main Game Area */}
+                    <main className="flex-grow flex flex-col items-center justify-center p-4 w-full max-w-2xl mx-auto animate-[fadeIn_0.5s_ease-out]">
+                        
+                        <div className="w-full bg-white rounded-3xl shadow-xl border border-slate-100 flex flex-col transition-all duration-300 relative">
+                            
+                            <div className="relative bg-slate-100 p-8 min-h-[260px] flex items-center justify-center border-b border-slate-100 rounded-t-3xl overflow-hidden">
+                                <img 
+                                    src={`https://flagcdn.com/w640/${currentFlag.code}.png`}
+                                    alt="Flag"
+                                    className="h-48 rounded-lg shadow-lg object-contain bg-white"
+                                />
+                                
+                                {feedback && (
+                                    <div className={`absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm transition-opacity duration-200 animate-[fadeIn_0.2s_ease-out]`}>
+                                        <div className="text-center transform animate-[zoomIn_0.2s_ease-out]">
+                                            {feedback === 'correct' ? (
+                                                <React.Fragment>
+                                                    <div className="mx-auto bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                                                        <IconCheck size={40} className="text-green-600" strokeWidth={3} />
+                                                    </div>
+                                                    <h2 className="text-2xl font-bold text-green-700">{currentFlag.name}</h2>
+                                                    <p className="text-green-600 font-medium mt-1">Well done!</p>
+                                                </React.Fragment>
+                                            ) : (
+                                                <React.Fragment>
+                                                    <div className="mx-auto bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                                                        <IconX size={40} className="text-red-600" strokeWidth={3} />
+                                                    </div>
+                                                    <h2 className="text-xl font-bold text-slate-800 mb-1">Not quite.</h2>
+                                                    <p className="text-slate-500 mb-2">It's the flag of</p>
+                                                    <h2 className="text-3xl font-extrabold text-indigo-600">{currentFlag.name}</h2>
+                                                    <div className="mt-6 text-xs text-slate-400 font-medium uppercase tracking-widest flex items-center justify-center gap-2">
+                                                        Press Enter <IconArrowRight size={12} />
+                                                    </div>
+                                                </React.Fragment>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="p-6 relative">
+                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                                    Identify this Country
+                                </label>
+                                
+                                <div className="relative z-20">
+                                    <input
+                                        ref={inputRef}
+                                        type="text"
+                                        value={inputValue}
+                                        onChange={handleInput}
+                                        onKeyDown={handleKeyDown}
+                                        disabled={!!feedback}
+                                        placeholder="Type country name..."
+                                        className={`w-full text-lg p-4 pl-12 rounded-xl border-2 outline-none transition-all font-semibold
+                                            ${feedback === 'correct' ? 'border-green-500 bg-green-50 text-green-900' : 
+                                            feedback === 'wrong' ? 'border-red-500 bg-red-50 text-red-900' : 
+                                            'border-slate-200 bg-slate-50 text-slate-800 focus:border-indigo-500 focus:bg-white focus:shadow-md'
+                                            }`}
+                                        autoComplete="off"
+                                        autoFocus
+                                    />
+                                    <div className={`absolute left-4 top-1/2 -translate-y-1/2 ${feedback ? 'opacity-0' : 'text-slate-400'}`}>
+                                        <IconSearch size={20} />
+                                    </div>
+                                </div>
+
+                                {suggestions.length > 0 && !feedback && (
+                                    <div className="absolute left-6 right-6 top-[5.5rem] bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden z-30 divide-y divide-slate-50">
+                                        {suggestions.map((country) => (
+                                            <button
+                                                key={country.code}
+                                                onClick={() => selectSuggestion(country.name)}
+                                                className="w-full text-left px-4 py-3 hover:bg-indigo-50 text-slate-700 font-medium flex items-center justify-between group transition-colors"
+                                            >
+                                                <span>{country.name}</span>
+                                                <span className="text-xs text-indigo-300 group-hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all uppercase font-bold tracking-wider">Select</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                                
+                                <div className="mt-6 flex items-center justify-between text-sm text-slate-400 border-t border-slate-50 pt-4 relative z-10">
+                                    <span>Current Session: {sessionStats.correct} / {sessionStats.total}</span>
+                                    {feedback === 'wrong' && (
+                                        <button onClick={nextFlag} className="text-indigo-600 font-bold hover:underline">Skip</button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {!feedback && inputValue.length === 0 && (
+                            <p className="mt-8 text-slate-400 text-sm font-medium animate-pulse">
+                                Type the name and press Enter
+                            </p>
+                        )}
+                    </main>
+                    </React.Fragment>
+                );
+            };
+
+            return (
+                <div className="min-h-screen bg-slate-50 flex flex-col">
+                    {isSetupMode ? (
+                        <div className="flex-grow flex flex-col justify-center relative">
+                            <div className="absolute top-4 right-4">
+                                {Object.keys(progress.items).length > 0 && (
+                                    <button 
+                                        onClick={resetProgress}
+                                        className="flex items-center gap-2 px-4 py-2 text-red-500 bg-red-50 hover:bg-red-100 rounded-lg text-sm font-bold transition-colors"
+                                    >
+                                        <IconRotateCcw size={16} /> Reset Progress
+                                    </button>
+                                )}
+                            </div>
+                            <SetupScreen />
+                        </div>
+                    ) : (
+                        <GameScreen />
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<FlagTrainer />);
+    </script>
+</body>
+</html>
+
