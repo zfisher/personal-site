@@ -134,14 +134,25 @@ a.back:hover {
 .content .social-media-line {
   display: flex;
   justify-content: center;
-  gap: 26px;
+  align-items: flex-start;
+  gap: 34px;
   margin-top: 26px;
 }
 
 .social-media-line a {
   display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
   color: var(--icon);
   transition: color 0.15s ease;
+}
+
+.social-label {
+  font-size: 10.5pt;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 .social-media-line a:hover {
@@ -169,8 +180,8 @@ a.back:hover {
     height: 130px;
   }
 
-  .social-media-line {
-    gap: 22px;
+  .content .social-media-line {
+    gap: 26px;
   }
 
   .social-media-line svg {
