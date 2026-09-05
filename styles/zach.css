@@ -6,7 +6,7 @@
   --link-rgb: 26, 95, 168;
   --muted: rgb(110, 113, 118);
   --icon: rgb(96, 99, 104);
-  --photo-ring: #fff;
+  --photo-ring: #ececec;
   --photo-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
   --input-border: #e0e0e0;
   --input-background: #fff;
@@ -72,9 +72,18 @@ h1 {
 }
 
 .content p.subtitle {
-  font-size: 15pt;
+  font-size: 14pt;
   margin-top: 0;
-  margin-bottom: 28pt;
+  margin-bottom: 10pt;
+  color: var(--muted);
+}
+
+.bio {
+  max-width: 33em;
+  margin: 0 auto 26pt;
+  font-size: 13pt;
+  line-height: 1.65;
+  text-wrap: pretty;
 }
 
 a {
@@ -148,12 +157,41 @@ a.back:hover {
   box-shadow: 0 0 0 4px var(--photo-ring), var(--photo-shadow);
 }
 
+.work {
+  max-width: 34em;
+  margin: 34px auto 0;
+}
+
+.work h2 {
+  font-size: 10pt;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 6px;
+}
+
+.work-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 20px;
+  padding: 7px 0;
+  text-align: left;
+}
+
+.work-meta {
+  color: var(--muted);
+  font-size: 11pt;
+  white-space: nowrap;
+}
+
 .content .social-media-line {
   display: flex;
   justify-content: center;
   align-items: flex-start;
   gap: 34px;
-  margin-top: 26px;
+  margin-top: 34px;
 }
 
 .social-media-line a {
@@ -199,6 +237,20 @@ a.back:hover {
 
   .content .social-media-line {
     gap: 26px;
+  }
+
+  .bio {
+    font-size: 12.5pt;
+  }
+
+  .work-item {
+    flex-direction: column;
+    gap: 1px;
+    padding: 9px 0;
+  }
+
+  .work-meta {
+    white-space: normal;
   }
 
   .social-media-line svg {
