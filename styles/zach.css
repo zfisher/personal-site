@@ -4,7 +4,7 @@
   --accent: #14416e;
   --link: #1a5fa8;
   --muted: rgb(110, 113, 118);
-  --icon: rgb(96, 99, 104);
+  --icon: #44688f;
   --photo-ring: #ececec;
   --photo-ring-width: 1px;
   --input-border: #e0e0e0;
@@ -18,7 +18,7 @@
     --accent: #9cc4e4;
     --link: #8fb8de;
     --muted: rgb(151, 156, 159);
-    --icon: rgb(170, 174, 178);
+    --icon: #93aabe;
     --photo-ring: rgb(48, 48, 48);
     --input-border: #3a3a3a;
     --input-background: #222;
