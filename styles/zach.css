@@ -155,8 +155,29 @@ a:hover {
   transform: rotate(45deg);
 }
 
+a.back {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 7px;
+  transition: background-color 0.15s ease;
+}
+
 a.back:hover {
   text-decoration: none;
+  background-color: var(--wash);
+}
+
+a.back:focus-visible {
+  text-decoration: none;
+  background-color: var(--wash);
+  outline: 2px solid var(--link);
+  outline-offset: 1px;
+}
+
+/* On the document pages the back link is left-aligned, so pull it back by its
+   own padding to keep the text on the column edge. */
+body.doc a.back {
+  margin-left: -10px;
 }
 
 .me {
