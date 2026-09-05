@@ -70,9 +70,8 @@ h1 {
 }
 
 .content p.subtitle {
-  font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
-  font-size: 10.5pt;
-  letter-spacing: 0.09em;
+  font-size: 11pt;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   margin-top: 0;
   margin-bottom: 14pt;
@@ -194,6 +193,10 @@ a.back:hover {
 }
 
 @media all and (max-width: 700px) {
+  .content {
+    padding: 10px 0;
+  }
+
   h1 {
     font-size: 29pt;
   }
@@ -218,5 +221,65 @@ a.back:hover {
   .social-media-line svg {
     width: 26px;
     height: 26px;
+  }
+}
+
+/* Document pages: a reading column, aligned to the top rather than centred. */
+body.doc {
+  align-items: flex-start;
+}
+
+body.doc .content {
+  max-width: 44em;
+  padding: 54px 0 60px;
+  text-align: left;
+}
+
+.lede {
+  font-size: 13pt;
+  line-height: 1.7;
+  margin: 0 0 16px;
+  text-wrap: pretty;
+}
+
+.pubs h2 {
+  font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+  font-size: 16pt;
+  margin: 38px 0 4px;
+}
+
+.pub {
+  margin: 0;
+  padding: 11px 0;
+  font-size: 11.5pt;
+  line-height: 1.55;
+}
+
+.pub-authors,
+.pub-venue {
+  color: var(--muted);
+}
+
+.pub a,
+.pub-title {
+  display: block;
+}
+
+.back {
+  margin-top: 44px;
+}
+
+@media all and (max-width: 700px) {
+  body.doc .content {
+    padding: 34px 0 44px;
+  }
+
+  .pubs h2 {
+    font-size: 15pt;
+  }
+
+  .pub {
+    font-size: 11pt;
   }
 }
