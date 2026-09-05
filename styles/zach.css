@@ -314,6 +314,10 @@ body.doc .content {
   margin-top: 44px;
 }
 
+.back-top {
+  margin: 0 0 26px;
+}
+
 @media all and (max-width: 700px) {
   body.doc .content {
     padding: 34px 0 44px;
