@@ -9,6 +9,7 @@
   --photo-ring-width: 1px;
   --input-border: #e0e0e0;
   --input-background: #fff;
+  --wash: rgba(26, 95, 168, 0.08);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,6 +23,7 @@
     --photo-ring: rgb(48, 48, 48);
     --input-border: #3a3a3a;
     --input-background: #222;
+    --wash: rgba(143, 184, 222, 0.13);
   }
 }
 
@@ -105,12 +107,20 @@ a:hover {
 .links a {
   white-space: nowrap;
   font-size: 13pt;
+  padding: 4px 10px;
+  border-radius: 7px;
+  transition: background-color 0.15s ease;
+}
+
+.links a:hover {
+  text-decoration: none;
+  background-color: var(--wash);
 }
 
 .sep {
   display: inline-flex;
   align-items: center;
-  margin: 0 13px;
+  margin: 0 3px;
   color: var(--muted);
 }
 
@@ -162,7 +172,7 @@ a.back:hover {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 24px;
+  gap: 4px;
   margin-top: 30px;
 }
 
@@ -170,8 +180,10 @@ a.back:hover {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  padding: 4px 10px;
+  border-radius: 7px;
   color: var(--icon);
-  transition: color 0.15s ease;
+  transition: color 0.15s ease, background-color 0.15s ease;
 }
 
 .social-label {
@@ -183,6 +195,16 @@ a.back:hover {
 
 .social-media-line a:hover {
   color: var(--link);
+  text-decoration: none;
+  background-color: var(--wash);
+}
+
+/* Keyboard users get the same shape, plus a ring so focus outranks hover. */
+.links a:focus-visible,
+.social-media-line a:focus-visible {
+  background-color: var(--wash);
+  outline: 2px solid var(--link);
+  outline-offset: 1px;
   text-decoration: none;
 }
 
@@ -211,11 +233,28 @@ a.back:hover {
   }
 
   .content .social-media-line {
-    gap: 20px;
+    gap: 2px;
   }
 
   .bio {
     font-size: 12.5pt;
+  }
+}
+
+/* Very narrow screens: the hover padding is enough to wrap both rows, so trim
+   it and the separator margins to keep each on one line. */
+@media all and (max-width: 400px) {
+  .links a,
+  .social-media-line a {
+    padding: 2px 6px;
+  }
+
+  .sep {
+    margin: 0 2px;
+  }
+
+  .content .social-media-line {
+    margin-top: 22px;
   }
 }
 
