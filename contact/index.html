@@ -9,6 +9,7 @@
   <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
   <link href="https://fonts.bunny.net/css?family=Montserrat:200%7CRaleway&display=swap" rel="stylesheet">
   <link href="/styles/zach.css" rel="stylesheet">
 
@@ -21,8 +22,15 @@
       width: 98%;
       font: 13pt/1.4 Montserrat, sans-serif;
       padding: 6px;
-      border: 1px solid #e0e0e0;
+      border: 1px solid var(--input-border);
       border-radius: 5px;
+      background: var(--input-background);
+      color: var(--text);
+      transition: border-color 0.15s ease;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--link);
     }
     input {
       width: 47%;
@@ -34,22 +42,19 @@
     button {
       margin: 1.2em auto 0;
       display: block;
-      padding: 6px 16px;
-      border: 1px solid #e0e0e0;
-      background:#fff;
+      padding: 8px 26px;
+      border: none;
+      border-radius: 6px;
+      background: var(--link);
+      color: #fff;
+      font-family: 'Raleway', -apple-system, Helvetica, sans-serif;
       font-size: 14pt;
+      cursor: pointer;
+      transition: filter 0.15s ease, transform 0.15s ease;
     }
-    @media (prefers-color-scheme:dark) {
-      input, textarea {
-        background:#222;
-        color:#fff;
-        border-color:#3a3a3a;
-      }
-      button {
-        background:#222;
-        color:#ddd;
-        border-color:#3a3a3a;
-      }
+    button:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
     }
     @media all and (max-width: 700px) {
       input {
