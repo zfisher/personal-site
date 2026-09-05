@@ -292,6 +292,8 @@ body.doc .content {
 
 .pub-authors,
 .pub-venue {
+  display: block;
+  font-size: 10.5pt;
   color: var(--muted);
 }
 
