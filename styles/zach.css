@@ -1,7 +1,13 @@
-body,
 html {
   height: 100%;
+}
+
+body {
+  min-height: 100%;
   margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 h1 {
@@ -47,14 +53,9 @@ h1 {
 }
 
 .content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
   width: 90%;
-  -ms-transform: translateX(-50%) translateY(-50%);
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  max-height: 100%;
+  padding: 24px 0;
+  box-sizing: border-box;
 }
 
 a {
@@ -99,13 +100,10 @@ a.back:hover {
 }
 
 .me {
+  display: block;
   width: 200px;
   height: 200px;
-  margin-left: 50%;
-  margin-bottom: 23px;
-  -ms-transform: translateX(-50%);
-  -webkit-transform: translate(-50%, 0%);
-  transform: translate(-50%, 0%);
+  margin: 0 auto 23px;
 }
 
 .social-button {
@@ -158,21 +156,17 @@ a:hover .social-button {
   body {
     background-color: rgb(27, 27, 27);
     color: white;
-}
-h1 {
-  color : rgb(255, 77, 95);
+  }
 
-white-space : nowrap;
-text-align : center;
-}
-
+  h1 {
+    color: rgb(255, 77, 95);
+  }
 
   a {
     color: rgb(147, 203, 235);
   }
 
-.arrow {
+  .arrow {
     border-color: rgb(147, 203, 235);
-    border-width: 0 3px 3px 0;
   }
 }
