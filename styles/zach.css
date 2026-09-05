@@ -141,13 +141,12 @@ a.back:hover {
 .social-media-line a {
   display: inline-flex;
   color: var(--icon);
-  transition: color 0.15s ease, transform 0.15s ease;
+  transition: color 0.15s ease;
 }
 
 .social-media-line a:hover {
   color: var(--link);
   text-decoration: none;
-  transform: translateY(-2px);
 }
 
 .social-media-line svg {
