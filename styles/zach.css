@@ -261,7 +261,8 @@ body.doc .content {
   color: var(--muted);
 }
 
-.pub a {
+.pub a,
+.pub-title {
   display: block;
 }
 

@@ -17,21 +17,32 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
   <link href="https://fonts.bunny.net/css2?family=Raleway:wght@400&family=Source+Serif+4:wght@400&display=swap" rel="stylesheet">
-  <link href="/styles/zach.css?v=10" rel="stylesheet">
+  <link href="/styles/zach.css?v=11" rel="stylesheet">
 </head>
 
 <body class="doc">
   <div class="content">
     <h1>Research</h1>
 
-    <p class="lede">I work on post-training and evaluation of LLMs at Google DeepMind, on reward
-      modelling, agentic coding, and benchmarks for scientific reasoning.</p>
+    <p class="lede">I work on post-training and evaluation of LLMs at Google DeepMind. Much of that
+      is reward modelling for reinforcement learning &mdash; rubric-conditioned critiques, code-based
+      auto-raters, and critic-driven self-improvement &mdash; alongside benchmarks for scientific
+      agents that have to do long-horizon optimization against real simulators.</p>
 
-    <p class="lede">Before that I spent a decade in theoretical physics. I did my PhD at Berkeley on
-      entropy bounds and entanglement, where I helped formulate the Quantum Null Energy Condition
-      and co-authored its first proof, and then held an It from Qubit fellowship at the Perimeter
-      Institute working on black hole evaporation and the links between quantum information and
-      spacetime geometry.</p>
+    <p class="lede">The rest is the machinery around training: synthetic data generation with
+      simulator-backed verification, and diagnosing why large training runs go wrong, from silent
+      infrastructure faults and reward-signal degradation to evaluation flakiness and shifts in
+      model behaviour.</p>
+
+    <p class="lede">Before DeepMind I was at Google Research, working on structured attribute
+      extraction for Shopping and Maps, and on structured contrastive summarization, which went
+      into the Shopping Companion launch at Google I/O 2023.</p>
+
+    <p class="lede">Before AI I was a theoretical physicist. I did my PhD at Berkeley from 2012 to
+      2017 on entropy bounds and entanglement, where I helped formulate the Quantum Null Energy
+      Condition and co-authored its first proof, and then held an It from Qubit fellowship at the
+      Perimeter Institute until 2020, working on black hole evaporation and the links between
+      quantum information and spacetime geometry.</p>
 
     <section class="pubs">
       <h2>Machine learning</h2>
@@ -103,6 +114,20 @@
         <span class="pub-authors">R. Bousso, H. Casini, <strong>Z. Fisher</strong>, J. Maldacena.</span>
         <a href="https://arxiv.org/abs/1404.5635">Proof of a Quantum Bousso Bound.</a>
         <span class="pub-venue">Phys. Rev. D 90, 044002 (2014).</span>
+      </p>
+    </section>
+
+    <section class="pubs">
+      <h2>Patents and disclosures</h2>
+      <p class="pub">
+        <span class="pub-authors">A. Sadr, T. Yu, D. Li, <strong>Z. Fisher</strong> et al.</span>
+        <span class="pub-title">Artificial Intelligence Generated Badges for Search.</span>
+        <span class="pub-venue">U.S. Patent Application 18/636,844 (2024).</span>
+      </p>
+      <p class="pub">
+        <span class="pub-authors">H. Wu, <strong>Z. Fisher</strong> et al.</span>
+        <a href="https://www.tdcommons.org/cgi/viewcontent.cgi?article=10458&amp;context=dpubs_series">Automated Optimization of Structured Large Language Model Prompts via Iterative Evaluation.</a>
+        <span class="pub-venue">Technical Disclosure Commons (2026).</span>
       </p>
     </section>
 
