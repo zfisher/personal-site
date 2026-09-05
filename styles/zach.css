@@ -4,6 +4,7 @@
   --accent: #14416e;
   --link: #1a5fa8;
   --muted: rgb(110, 113, 118);
+  --author: #4a4d52;
   --icon: #44688f;
   --photo-ring: #ececec;
   --photo-ring-width: 1px;
@@ -19,6 +20,7 @@
     --accent: #9cc4e4;
     --link: #8fb8de;
     --muted: rgb(151, 156, 159);
+    --author: #c2c7cb;
     --icon: #93aabe;
     --photo-ring: rgb(48, 48, 48);
     --input-border: #3a3a3a;
@@ -293,6 +295,13 @@ body.doc .content {
 .pub-venue {
   display: block;
   font-size: 10.5pt;
+}
+
+.pub-authors {
+  color: var(--author);
+}
+
+.pub-venue {
   color: var(--muted);
 }
 
