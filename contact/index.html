@@ -11,40 +11,68 @@
 
   <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
   <link href="https://fonts.bunny.net/css2?family=Raleway:wght@400&family=Source+Serif+4:wght@400&display=swap" rel="stylesheet">
-  <link href="/styles/zach.css?v=21" rel="stylesheet">
+  <link href="/styles/zach.css?v=22" rel="stylesheet">
 
   <style>
     form {
-      max-width: 700px;
+      max-width: 620px;
       margin: 0 auto;
+      text-align: left;
     }
-    input, textarea {
-      width: 98%;
+
+    .field-row {
+      display: flex;
+      gap: 14px;
+    }
+
+    .field {
+      flex: 1;
+      margin-bottom: 14px;
+    }
+
+    /* Placeholders alone leave nothing for a screen reader to announce. */
+    .field label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    input,
+    textarea {
+      box-sizing: border-box;
+      width: 100%;
       font: 13pt/1.4 'Raleway', -apple-system, Helvetica, sans-serif;
-      padding: 6px;
+      padding: 9px 11px;
       border: 1px solid var(--input-border);
-      border-radius: 5px;
+      border-radius: 7px;
       background: var(--input-background);
       color: var(--text);
       transition: border-color 0.15s ease;
     }
-    input:focus, textarea:focus {
+
+    input:focus,
+    textarea:focus {
       outline: none;
       border-color: var(--link);
     }
-    input {
-      width: 47%;
-    }
+
     textarea {
-      height: 160px;
+      display: block;
+      height: 170px;
       resize: vertical;
     }
+
     button {
-      margin: 1.2em auto 0;
+      margin: 1.4em auto 0;
       display: block;
-      padding: 8px 26px;
+      padding: 9px 28px;
       border: none;
-      border-radius: 6px;
+      border-radius: 7px;
       background: var(--link);
       color: #fff;
       font-family: 'Raleway', -apple-system, Helvetica, sans-serif;
@@ -52,19 +80,19 @@
       cursor: pointer;
       transition: filter 0.15s ease;
     }
+
     button:hover {
       filter: brightness(1.1);
     }
-    @media all and (max-width: 700px) {
-      input {
-        width: 42%;
-      }
-      textarea {
-        width: 96%;
-      }
-      p {
-        padding-left: 3%;
-        padding-right: 3%;
+
+    button:focus-visible {
+      outline: 2px solid var(--link);
+      outline-offset: 3px;
+    }
+
+    @media all and (max-width: 380px) {
+      .field-row {
+        display: block;
       }
     }
   </style>
@@ -74,12 +102,23 @@
   <div class="content">
     <h1>Write to Zach</h1>
 
-    <form id="contact" action="https://contact.zachfisher.com/submit" method="POST" novalidate>
-      <p><input name="name"  placeholder="Your name"           required>
-         <input name="email" type="email" placeholder="Your email" required style="float:right"></p>
+    <form id="contact" action="https://contact.zachfisher.com/submit" method="POST">
+      <div class="field-row">
+        <div class="field">
+          <label for="name">Your name</label>
+          <input id="name" name="name" placeholder="Your name" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="email">Your email</label>
+          <input id="email" name="email" type="email" placeholder="Your email" autocomplete="email"
+                 pattern="[^@\s]+@[^@\s]+\.[^@\s]+" required>
+        </div>
+      </div>
 
-      <p><textarea name="message" placeholder="Message" required></textarea></p>
-
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" placeholder="Message" required></textarea>
+      </div>
 
       <div class="cf-turnstile"
            data-sitekey="0x4AAAAAABgcSnswh-1MbkB0"
@@ -94,30 +133,30 @@
 
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <script>
+    // The browser validates the fields before this fires, so all that is left
+    // here is the Turnstile handshake.
     let pendingTurnstile = false;
+    const contactForm = document.getElementById('contact');
 
-    document.getElementById('contact').addEventListener('submit', function (e) {
-      const name    = this.name.value.trim();
-      const email   = this.email.value.trim();
-      const message = this.message.value.trim();
-      if (!name || !email || !message ||
-          !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        alert('Please fill in all fields with a valid email.');
-        e.preventDefault();
+    contactForm.addEventListener('submit', function (event) {
+      if (this['cf-turnstile-response']?.value) {
         return;
       }
-      if (!this['cf-turnstile-response']?.value) {
-        e.preventDefault();
-        pendingTurnstile = true;
-        turnstile.execute();
+      event.preventDefault();
+      if (typeof turnstile === 'undefined') {
+        // The widget never loaded. Send anyway and let the server decide,
+        // rather than leaving the button silently dead.
+        this.submit();
         return;
       }
+      pendingTurnstile = true;
+      turnstile.execute();
     });
 
     function onCaptcha() {
       if (pendingTurnstile) {
         pendingTurnstile = false;
-        document.getElementById('contact').submit();
+        contactForm.submit();
       }
     }
   </script>
