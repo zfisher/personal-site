@@ -287,7 +287,7 @@ body.doc {
 
 body.doc .content {
   max-width: 44em;
-  padding: 54px 0 60px;
+  padding: 40px 0 56px;
   text-align: left;
 }
 
@@ -331,12 +331,13 @@ body.doc .content {
   display: block;
 }
 
-.back {
+p.back {
   margin-top: 44px;
+  line-height: 1.4;
 }
 
-.back-top {
-  margin: 0 0 26px;
+p.back-top {
+  margin: 0 0 18px;
 }
 
 @media all and (max-width: 700px) {
