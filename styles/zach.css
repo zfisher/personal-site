@@ -159,23 +159,23 @@ a.back:hover {
 
 .content .social-media-line {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  align-items: flex-start;
-  gap: 34px;
-  margin-top: 34px;
+  align-items: center;
+  gap: 24px;
+  margin-top: 30px;
 }
 
 .social-media-line a {
   display: inline-flex;
-  flex-direction: column;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   color: var(--icon);
   transition: color 0.15s ease;
 }
 
 .social-label {
-  font-size: 10.5pt;
+  font-size: 11pt;
   line-height: 1.2;
   letter-spacing: 0.02em;
   white-space: nowrap;
@@ -187,8 +187,8 @@ a.back:hover {
 }
 
 .social-media-line svg {
-  width: 28px;
-  height: 28px;
+  width: 16px;
+  height: 16px;
   fill: currentColor;
 }
 
@@ -211,16 +211,11 @@ a.back:hover {
   }
 
   .content .social-media-line {
-    gap: 26px;
+    gap: 20px;
   }
 
   .bio {
     font-size: 12.5pt;
-  }
-
-  .social-media-line svg {
-    width: 26px;
-    height: 26px;
   }
 }
 
