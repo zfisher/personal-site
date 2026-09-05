@@ -58,11 +58,10 @@ body {
 }
 
 h1 {
-  font-family: 'Montserrat', 'Helvetica Neue', Helvetica, sans-serif;
+  font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   font-weight: 400;
-  font-size: 40pt;
+  font-size: 37pt;
   line-height: 1.2;
-  letter-spacing: 0.02em;
   margin-top: 0;
   margin-bottom: 7pt;
   color: var(--accent);
@@ -195,7 +194,7 @@ a.back:hover {
 
 @media all and (max-width: 700px) {
   h1 {
-    font-size: 31pt;
+    font-size: 29pt;
   }
 
   .content p.subtitle {
